@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
-const { validateName, validateEmail, validateAddress, validatePassword } = require('../utils/validators');
+const { validateName, validateEmail, validateAddress, validatePassword, validateRole } = require('../utils/validators');
 
 function createToken(userId) {
   return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: '7d' });
@@ -15,14 +15,16 @@ function userResponse(user) {
 // POST /api/auth/register  (public sign up, always creates a normal "user")
 async function register(req, res) {
   try {
-    const { name, email, address, password } = req.body;
+        const { name, email, address, password, role } = req.body;
+
 
     // Collect every validation error so the user can fix them all at once
-    const errors = [
+      const errors = [
       validateName(name),
       validateEmail(email),
       validateAddress(address),
       validatePassword(password),
+      validateRole(role),
     ].filter(Boolean);
     if (errors.length > 0) {
       return res.status(400).json({ message: errors[0], errors });
@@ -41,7 +43,7 @@ async function register(req, res) {
       email,
       address,
       password: hashedPassword,
-      role: 'user',
+      role: role,
     });
 
     res.status(201).json({ token: createToken(user._id), user: userResponse(user) });

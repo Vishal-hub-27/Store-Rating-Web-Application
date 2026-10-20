@@ -36,4 +36,26 @@ function validateRating(rating) {
   return '';
 }
 
-module.exports = { validateName, validateEmail, validateAddress, validatePassword, validateRating };
+// Public sign up lets the person choose: "user" (customer) or "owner" (store owner)
+function validateRole(role) {
+  if (role !== 'user' && role !== 'owner') return 'Please choose whether you are a customer or a store owner.';
+  return '';
+}
+
+function validateStoreName(name) {
+  if (typeof name !== 'string' || name.trim() === '') return 'Store name is required.';
+  if (name.trim().length > 60) return 'Store name must be at most 60 characters.';
+  return '';
+}
+
+// Description is optional, but if it is given it must be at most 500 characters
+function validateStoreDescription(description) {
+  if (description === undefined || description === null || description === '') return '';
+  if (typeof description !== 'string' || description.trim().length > 500) return 'Description must be at most 500 characters.';
+  return '';
+}
+
+module.exports = {
+  validateName, validateEmail, validateAddress, validatePassword, validateRating,
+  validateRole, validateStoreName, validateStoreDescription,
+};

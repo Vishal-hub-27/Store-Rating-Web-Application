@@ -2,51 +2,48 @@ const Store = require('../models/Store');
 const Rating = require('../models/Rating');
 const { getRatingStats } = require('../utils/ratingStats');
 
-// Finds the store that belongs to the logged-in owner.
+// GET /api/owner/dashboard -> ALL stores of the logged-in owner (with their average ratings)
 // We always search by req.user._id (from the token), never by an id sent by the client,
-// so an owner can never see another owner's store.
-function findOwnerStore(ownerId) {
-  return Store.findOne({ ownerId });
-}
-
-// GET /api/owner/dashboard
+// so an owner can never see another owner's stores.
 async function getDashboard(req, res) {
   try {
-    const store = await findOwnerStore(req.user._id);
-    if (!store) {
-      return res.status(404).json({ message: 'No store is linked to your account.' });
-    }
+    const stores = await Store.find({ ownerId: req.user._id }).sort({ createdAt: -1 });
+    const stats = await getRatingStats(stores.map((store) => store._id));
 
-    const stats = await getRatingStats([store._id]);
-    const storeStats = stats[store._id.toString()] || { averageRating: 0, ratingCount: 0 };
-
-    res.json({
-      store: { id: store._id, name: store.name, address: store.address },
-      averageRating: storeStats.averageRating,
-      ratingCount: storeStats.ratingCount,
+    const list = stores.map((store) => {
+      const storeStats = stats[store._id.toString()] || { averageRating: 0, ratingCount: 0 };
+      return {
+        id: store._id,
+        name: store.name,
+        address: store.address,
+        averageRating: storeStats.averageRating,
+        ratingCount: storeStats.ratingCount,
+      };
     });
+    const totalRatings = list.reduce((sum, store) => sum + store.ratingCount, 0);
+
+    res.json({ stores: list, totalStores: list.length, totalRatings });
   } catch (error) {
     console.error('Owner dashboard error:', error.message);
     res.status(500).json({ message: 'Could not load the dashboard.' });
   }
 }
 
-// GET /api/owner/ratings -> who rated my store and what they gave
+// GET /api/owner/ratings -> who rated any of my stores and what they gave
 async function getOwnerRatings(req, res) {
   try {
-    const store = await findOwnerStore(req.user._id);
-    if (!store) {
-      return res.status(404).json({ message: 'No store is linked to your account.' });
-    }
-
-    const ratings = await Rating.find({ storeId: store._id })
+    const stores = await Store.find({ ownerId: req.user._id });
+    const ratings = await Rating.find({ storeId: { $in: stores.map((store) => store._id) } })
       .populate('userId', 'name email')
+      .populate('storeId', 'name')
       .sort({ updatedAt: -1 });
 
     const result = ratings
-      .filter((item) => item.userId)
+      .filter((item) => item.userId && item.storeId)
       .map((item) => ({
         id: item._id,
+        storeId: item.storeId._id,
+        storeName: item.storeId.name,
         userName: item.userId.name,
         userEmail: item.userId.email,
         rating: item.rating,

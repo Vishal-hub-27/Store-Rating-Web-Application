@@ -25,3 +25,15 @@ export function validatePassword(password) {
   if (!/[^A-Za-z0-9]/.test(password)) return 'Password must contain at least one special character.';
   return '';
 }
+
+export function validateStoreName(name) {
+  if (name.trim() === '') return 'Store name is required.';
+  if (name.trim().length > 60) return 'Store name must be at most 60 characters.';
+  return '';
+}
+
+// Description is optional
+export function validateDescription(description) {
+  if (description.trim().length > 500) return 'Description must be at most 500 characters.';
+  return '';
+}

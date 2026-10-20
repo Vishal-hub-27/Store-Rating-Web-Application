@@ -10,7 +10,7 @@ function Register() {
   const { user, register } = useAuth();
   const navigate = useNavigate();
 
-  const [form, setForm] = useState({ name: '', email: '', address: '', password: '' });
+  const [form, setForm] = useState({ name: '', email: '', address: '', password: '', role: 'user' });
   const [fieldErrors, setFieldErrors] = useState({});
   const [serverError, setServerError] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -78,6 +78,19 @@ function Register() {
               value={form.password} onChange={handleChange} />
             <div className="form-text">8 to 16 characters, with at least one uppercase letter and one special character.</div>
             <div className="invalid-feedback">{fieldErrors.password}</div>
+          </div>
+                    <div className="mb-3">
+            <label className="form-label d-block">I am registering as</label>
+            <div className="form-check form-check-inline">
+              <input className="form-check-input" type="radio" name="role" id="role-user" value="user"
+                checked={form.role === 'user'} onChange={handleChange} />
+              <label className="form-check-label" htmlFor="role-user">Customer</label>
+            </div>
+          <div className="form-check form-check-inline">
+              <input className="form-check-input" type="radio" name="role" id="role-owner" value="owner"
+                checked={form.role === 'owner'} onChange={handleChange} />
+              <label className="form-check-label" htmlFor="role-owner">Store Owner</label>
+            </div>
           </div>
           <button className="btn btn-success" disabled={submitting}>{submitting ? 'Creating account...' : 'Sign up'}</button>
           <p className="mt-3">Already have an account? <Link to="/login">Log in</Link></p>

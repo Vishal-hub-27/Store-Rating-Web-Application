@@ -46,7 +46,12 @@ function Navbar() {
         <div className={`collapse navbar-collapse ${menuOpen ? 'show' : ''}`}>
           <div className="navbar-nav">
             {user && user.role === 'user' && <Link className="nav-link" to="/stores" onClick={closeMenu}>Stores</Link>}
-            {user && user.role === 'owner' && <Link className="nav-link" to="/owner" onClick={closeMenu}>My Dashboard</Link>}
+            {user && user.role === 'owner' && (
+              <>
+                <Link className="nav-link" to="/owner" onClick={closeMenu}>My Dashboard</Link>
+                <Link className="nav-link" to="/owner/stores/new" onClick={closeMenu}>Add New Store</Link>
+              </>
+            )}
           </div>
 
           {/* Search is only useful for normal users, who browse stores */}
