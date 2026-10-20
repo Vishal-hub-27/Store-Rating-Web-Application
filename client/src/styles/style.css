@@ -1,0 +1,39 @@
+/* Reused from the original Wanderlust style.css.
+   Changes: body flex layout moved to #root (React mounts inside #root),
+   hotel-only styles (.tax-info, .tag-toggle, .show-img, .card-img-overlay, .listing-link) removed. */
+#root{
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
+}
+body{
+  font-family:"Plus Jakarta Sans", sans-serif !important;
+}
+.container{ flex:1; }
+.navbar{ min-height:5rem; background-color:white; }
+.navbar-brand i{ color:#fe424d; font-size:2rem; }
+.nav-link{ color:#222222 !important; }
+.logout-btn{ text-decoration:none; }
+
+/* search */
+.btn-search{ background-color:#fe424d; color:white; border-radius:25px; padding:0 1rem; }
+.btn-search:hover{ background-color:#fe424d; color:white; }
+.btn-search i{ display:inline; margin-right:.5rem; }
+.search-inp{ border-radius:25px; padding:.5rem 3rem; }
+
+/* footer */
+footer{
+  text-align:center;
+  background-color:#ebebeb;
+  padding:1.2rem 0;
+  margin-top:2rem;
+}
+.f-info > div{ margin:.25rem 0; }
+.f-info-links a{ text-decoration:none; color:#222222; margin:0 .5rem; }
+.f-info-links a:hover{ text-decoration:underline; }
+
+/* cards (was .listing-card for hotels, now used for stores) */
+#filters{ display:flex; flex-wrap:wrap; align-items:center; }
+.listing-card{ border:none !important; margin-bottom:2rem; }
+.card-body{ padding:0 !important; }
+.add-btn{ background-color:#fe424d !important; border:none !important; }
