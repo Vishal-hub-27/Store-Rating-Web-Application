@@ -5,7 +5,7 @@ import { getErrorMessage } from '../services/api';
 import { validateName, validateEmail, validateAddress, validatePassword } from '../utils/validators';
 import Alert from '../components/Alert';
 
-// Converted from views/users/signup.php. Public sign up always creates a normal "user".
+// Converted from views/users/signup.php. The person chooses Customer (role "user") or Store Owner (role "owner").
 function Register() {
   const { user, register } = useAuth();
   const navigate = useNavigate();
@@ -79,14 +79,14 @@ function Register() {
             <div className="form-text">8 to 16 characters, with at least one uppercase letter and one special character.</div>
             <div className="invalid-feedback">{fieldErrors.password}</div>
           </div>
-                    <div className="mb-3">
+          <div className="mb-3">
             <label className="form-label d-block">I am registering as</label>
             <div className="form-check form-check-inline">
               <input className="form-check-input" type="radio" name="role" id="role-user" value="user"
                 checked={form.role === 'user'} onChange={handleChange} />
               <label className="form-check-label" htmlFor="role-user">Customer</label>
             </div>
-          <div className="form-check form-check-inline">
+            <div className="form-check form-check-inline">
               <input className="form-check-input" type="radio" name="role" id="role-owner" value="owner"
                 checked={form.role === 'owner'} onChange={handleChange} />
               <label className="form-check-label" htmlFor="role-owner">Store Owner</label>

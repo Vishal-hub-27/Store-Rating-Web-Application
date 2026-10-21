@@ -23,7 +23,7 @@ function check(name, condition, extra = '') {
 async function run() {
   console.log(`Testing ${API}\n`);
   const email = `tester${Date.now()}@example.com`;
-  const goodUser = { name: 'Brand New Test User Account', email, address: '5 Test Street, Nagpur', password: 'Test@1234' };
+  const goodUser = { name: 'Brand New Test User Account', email, address: '5 Test Street, Nagpur', password: 'Test@1234', role: 'user' };
 
   console.log('Health');
   check('GET /api/health', (await call('GET', '/api/health')).data.status === 'ok');
@@ -43,10 +43,17 @@ async function run() {
   }
 
   console.log('Register + login');
-  r = await call('POST', '/api/auth/register', { ...goodUser, role: 'owner' }); // tries to sneak in owner role
-  check('valid registration works', r.status === 201 && !!r.data.token);
-  check('role is forced to "user"', r.data.user && r.data.user.role === 'user');
+  for (const badRole of ['admin', '', undefined]) {
+    r = await call('POST', '/api/auth/register', { ...goodUser, role: badRole });
+    check(`invalid role rejected (${JSON.stringify(badRole)})`, r.status === 400, r.data.message);
+  }
+  r = await call('POST', '/api/auth/register', goodUser);
+  check('customer registration works and role is saved as "user"', r.status === 201 && r.data.user.role === 'user');
   check('password hash is not returned', !JSON.stringify(r.data).includes('$2'));
+  const ownerEmail = `newowner${Date.now()}@example.com`;
+  r = await call('POST', '/api/auth/register', { ...goodUser, email: ownerEmail, name: 'Brand New Test Store Owner', role: 'owner' });
+  check('owner registration works and role is saved as "owner"', r.status === 201 && r.data.user.role === 'owner');
+  const newOwnerToken = r.data.token;
   r = await call('POST', '/api/auth/register', goodUser);
   check('duplicate email rejected', r.status === 409);
   r = await call('POST', '/api/auth/login', { email, password: 'Wrong@1234' });
@@ -100,9 +107,9 @@ async function run() {
 
   console.log('Roles and owner access');
   r = await call('GET', '/api/owner/dashboard', null, userToken);
-  check('normal user blocked from owner dashboard (403)', r.status === 403);
+  check('customer blocked from owner dashboard (403)', r.status === 403);
   r = await call('GET', '/api/owner/ratings', null, userToken);
-  check('normal user blocked from owner ratings (403)', r.status === 403);
+  check('customer blocked from owner ratings (403)', r.status === 403);
   r = await call('GET', '/api/owner/dashboard');
   check('owner dashboard needs a token (401)', r.status === 401);
 
@@ -112,18 +119,62 @@ async function run() {
   r = await call('PUT', `/api/ratings/${storeId}`, { rating: 5 }, owner1Token);
   check('owner cannot submit ratings (403)', r.status === 403);
   r = await call('GET', '/api/owner/dashboard', null, owner1Token);
-  check('owner1 sees OWN store only', r.status === 200 && r.data.store.name === 'Nagpur Electronics Hub');
-  check('owner1 average 4.3 with 4 ratings', r.data.averageRating === 4.3 && r.data.ratingCount === 4, JSON.stringify(r.data));
+  check('owner1 dashboard lists own store only', r.status === 200 && r.data.stores.length === 1 && r.data.stores[0].name === 'Nagpur Electronics Hub', JSON.stringify(r.data));
+  check('owner1 store has average 4.3 and 4 ratings', r.data.stores[0].averageRating === 4.3 && r.data.stores[0].ratingCount === 4);
+  check('dashboard totals are correct', r.data.totalStores === 1 && r.data.totalRatings === 4);
   r = await call('GET', '/api/owner/ratings', null, owner1Token);
-  check('owner1 sees 4 raters with name, email, rating', r.data.ratings.length === 4 && r.data.ratings.every((x) => x.userName && x.userEmail && x.rating), JSON.stringify(r.data).slice(0, 150));
-  check('owner1 list includes the new tester', r.data.ratings.some((x) => x.userEmail === email && x.rating === 5));
-
+  check('owner1 sees 4 raters with name, email, rating', r.data.ratings.length === 4 && r.data.ratings.every((x) => x.userName && x.userEmail && x.rating));
   r = await call('POST', '/api/auth/login', { email: 'owner2@example.com', password: 'Owner@1234' });
   const owner2Token = r.data.token;
   r = await call('GET', '/api/owner/ratings', null, owner2Token);
   check('owner2 does NOT see owner1 raters', r.data.ratings.length === 1 && !r.data.ratings.some((x) => x.userEmail === email));
-  r = await call('GET', '/api/owner/dashboard?storeId=' + storeId, null, owner2Token);
-  check('owner2 cannot request owner1 store via query', r.data.store.name === 'City Books and Stationery');
+
+  console.log('Store details');
+  r = await call('GET', `/api/stores/${storeId}`, null, userToken);
+  check('customer sees details + 4 ratings', r.status === 200 && r.data.ratings.length === 4 && r.data.store.isOwner === false);
+  check('customer does NOT see raters\' emails', r.data.ratings.every((x) => x.userEmail === undefined));
+  check('customer sees own rating on the store', r.data.store.myRating === 5);
+  r = await call('GET', `/api/stores/${storeId}`, null, owner1Token);
+  check('owner of the store sees emails and isOwner=true', r.data.store.isOwner === true && r.data.ratings.every((x) => x.userEmail));
+  r = await call('GET', `/api/stores/${storeId}`, null, owner2Token);
+  check('another owner sees isOwner=false and no emails', r.data.store.isOwner === false && r.data.ratings.every((x) => x.userEmail === undefined));
+
+  console.log('Add and edit stores');
+  const goodStore = { name: 'My Brand New Test Store', address: '8 Test Road, Nagpur', description: 'We sell test things.' };
+  r = await call('POST', '/api/stores', goodStore, userToken);
+  check('customer cannot add a store (403)', r.status === 403);
+  r = await call('POST', '/api/stores', goodStore);
+  check('adding a store needs login (401)', r.status === 401);
+  for (const [label, bad] of [['empty name', { ...goodStore, name: '' }], ['name over 60', { ...goodStore, name: 'A'.repeat(61) }], ['empty address', { ...goodStore, address: '' }], ['address over 400', { ...goodStore, address: 'A'.repeat(401) }], ['description over 500', { ...goodStore, description: 'A'.repeat(501) }]]) {
+    r = await call('POST', '/api/stores', bad, newOwnerToken);
+    check(`store with ${label} rejected`, r.status === 400, r.data.message);
+  }
+  r = await call('POST', '/api/stores', goodStore, newOwnerToken);
+  check('owner adds a new store', r.status === 201 && r.data.store.name === goodStore.name);
+  const newStoreId = r.data.store.id;
+  r = await call('GET', '/api/stores?search=brand new test', null, userToken);
+  check('new store appears in the customer listing and is searchable', r.data.stores.length === 1 && r.data.stores[0].id === newStoreId);
+  check('new store starts with no ratings', r.data.stores[0].ratingCount === 0 && r.data.stores[0].averageRating === 0);
+  r = await call('GET', '/api/owner/dashboard', null, newOwnerToken);
+  check('new owner dashboard shows the new store', r.data.stores.length === 1 && r.data.stores[0].id === newStoreId);
+  r = await call('POST', '/api/stores', { ...goodStore, name: 'Second Store Of Same Owner' }, newOwnerToken);
+  r = await call('GET', '/api/owner/dashboard', null, newOwnerToken);
+  check('one owner can have 2 stores', r.data.totalStores === 2);
+
+  r = await call('PUT', `/api/stores/${newStoreId}`, { ...goodStore, name: 'Hacked Name' }, owner1Token);
+  check('another owner cannot edit this store (403)', r.status === 403);
+  r = await call('PUT', `/api/stores/${newStoreId}`, { ...goodStore, name: 'Hacked Name' }, userToken);
+  check('customer cannot edit a store (403)', r.status === 403);
+  r = await call('PUT', `/api/stores/${newStoreId}`, { ...goodStore, name: '' }, newOwnerToken);
+  check('edit with invalid data rejected (400)', r.status === 400);
+  r = await call('PUT', '/api/stores/not-an-id', goodStore, newOwnerToken);
+  check('edit with invalid id rejected (400)', r.status === 400);
+  r = await call('PUT', `/api/stores/${newStoreId}`, { name: 'Renamed Test Store', address: '9 New Road', description: '' }, newOwnerToken);
+  check('owner edits own store', r.status === 200 && r.data.store.name === 'Renamed Test Store');
+  r = await call('GET', `/api/stores/${newStoreId}`, null, newOwnerToken);
+  check('edit is saved', r.data.store.name === 'Renamed Test Store' && r.data.store.address === '9 New Road');
+  r = await call('PUT', `/api/ratings/${newStoreId}`, { rating: 4 }, userToken);
+  check('customer can rate the new store', r.status === 200 && r.data.averageRating === 4 && r.data.ratingCount === 1);
 
   console.log('Misc');
   r = await call('GET', '/api/unknown');

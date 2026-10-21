@@ -4,9 +4,9 @@ const mongoose = require('mongoose');
 const storeSchema = new mongoose.Schema({
   name: { type: String, required: true, trim: true, maxlength: 60 },
   address: { type: String, required: true, trim: true, maxlength: 400 },
+  description: { type: String, trim: true, maxlength: 500, default: '' }, // optional text shown on the details page
   ownerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   createdAt: { type: Date, default: Date.now },
-  description: { type: String, trim: true, maxlength: 500, default: '' }, // optional text shown on the details page
 });
 
 module.exports = mongoose.model('Store', storeSchema);

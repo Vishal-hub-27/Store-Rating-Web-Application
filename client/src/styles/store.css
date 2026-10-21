@@ -18,3 +18,9 @@
 .summary-number{ font-size:2.5rem; font-weight:800; line-height:1; }
 .form-card{ max-width:40rem; }
 .nav-user{ color:#6c757d !important; }
+
+/* Whole store card is a link to the details page */
+.listing-link{ text-decoration:none; color:inherit; display:block; }
+.listing-link:hover .store-banner{ opacity:.88; }
+.listing-link:hover h5{ text-decoration:underline; }
+.store-banner-large{ height:12rem; font-size:5rem; }

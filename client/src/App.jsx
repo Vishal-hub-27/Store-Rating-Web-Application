@@ -7,7 +7,10 @@ import Loader from './components/Loader';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import StoreList from './pages/StoreList';
+import StoreDetails from './pages/StoreDetails';
 import OwnerDashboard from './pages/OwnerDashboard';
+import AddStore from './pages/AddStore';
+import EditStore from './pages/EditStore';
 import { Privacy, Terms } from './pages/InfoPages';
 import NotFound from './pages/NotFound';
 
@@ -29,8 +32,18 @@ function App() {
             <Route path="/" element={<HomeRedirect />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+
+            {/* Customer dashboard */}
             <Route path="/stores" element={<ProtectedRoute role="user"><StoreList /></ProtectedRoute>} />
+
+            {/* Details page: any logged-in person (the page itself decides what each role sees) */}
+            <Route path="/stores/:id" element={<ProtectedRoute><StoreDetails /></ProtectedRoute>} />
+
+            {/* Owner pages */}
+            <Route path="/stores/:id/edit" element={<ProtectedRoute role="owner"><EditStore /></ProtectedRoute>} />
             <Route path="/owner" element={<ProtectedRoute role="owner"><OwnerDashboard /></ProtectedRoute>} />
+            <Route path="/owner/stores/new" element={<ProtectedRoute role="owner"><AddStore /></ProtectedRoute>} />
+
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="*" element={<NotFound />} />

@@ -12,14 +12,13 @@ function userResponse(user) {
   return { id: user._id, name: user.name, email: user.email, address: user.address, role: user.role };
 }
 
-// POST /api/auth/register  (public sign up, always creates a normal "user")
+// POST /api/auth/register  (public sign up: the person chooses to be a "user" (customer) or an "owner")
 async function register(req, res) {
   try {
-        const { name, email, address, password, role } = req.body;
-
+    const { name, email, address, password, role } = req.body;
 
     // Collect every validation error so the user can fix them all at once
-      const errors = [
+    const errors = [
       validateName(name),
       validateEmail(email),
       validateAddress(address),
@@ -37,13 +36,13 @@ async function register(req, res) {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // The role is NOT read from req.body, so nobody can register as an owner
+    // validateRole above guarantees the role is exactly "user" or "owner" (nothing else, e.g. no "admin")
     const user = await User.create({
       name: name.trim(),
       email,
       address,
       password: hashedPassword,
-      role: role,
+      role,
     });
 
     res.status(201).json({ token: createToken(user._id), user: userResponse(user) });

@@ -5,7 +5,7 @@ import StoreCard from '../components/StoreCard';
 import Loader from '../components/Loader';
 import Alert from '../components/Alert';
 
-// Converted from views/listings/index.php. Shows all stores as cards.
+// Customer dashboard (converted from views/listings/index.php). Shows all stores as cards; click one to see details and rate it.
 function StoreList() {
   const [searchParams] = useSearchParams();
   const search = searchParams.get('search') || ''; // comes from the navbar search box
@@ -35,21 +35,10 @@ function StoreList() {
     return () => { ignore = true; };
   }, [search]);
 
-  // Called by a StoreCard after a rating is saved: update that store's numbers on screen
-  function handleRatingSaved(storeId, data) {
-    setStores((current) =>
-      current.map((store) =>
-        store.id === storeId
-          ? { ...store, myRating: data.myRating, averageRating: data.averageRating, ratingCount: data.ratingCount }
-          : store
-      )
-    );
-  }
-
   return (
     <div>
       <div id="filters" className="mt-3">
-        <h3 className="me-4 mb-0">{search ? 'Search results' : 'All stores'}</h3>
+        <h3 className="me-4 mb-0">{search ? 'Search results' : 'Customer Dashboard'}</h3>
         {search && (
           <span>Results for <b>{search}</b> &middot; <Link to="/stores">clear</Link></span>
         )}
@@ -66,7 +55,7 @@ function StoreList() {
 
       <div className="row row-cols-lg-3 row-cols-md-2 row-cols-1 mt-3">
         {stores.map((store) => (
-          <StoreCard key={store.id} store={store} onRatingSaved={handleRatingSaved} />
+          <StoreCard key={store.id} store={store} />
         ))}
       </div>
     </div>
