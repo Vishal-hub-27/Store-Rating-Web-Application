@@ -186,7 +186,7 @@ Go back to Render -> Environment -> set `CLIENT_URL` to your Vercel URL (no trai
 ## Links
 
 - GitHub: https://github.com/Vishal-hub-27/Store-Rating-Web-Application_
-- Frontend (Vercel): store-rating-web-application-95jh40pdb-vishal-chougale.vercel.app
+- Frontend (Vercel): https://vercel.com/vishal-chougale/store-rating-web-application
 - Backend (Render): https://dashboard.render.com/web/srv-dbc1gb9srm7s739aolfg
 
 ## Security notes
