@@ -6,7 +6,6 @@ import StarRating from '../components/StarRating';
 import Loader from '../components/Loader';
 import Alert from '../components/Alert';
 
-// Owner dashboard: the owner's stores (name + average rating) and the users who rated them.
 // Click a store card to open its details page (where the store can be edited).
 function OwnerDashboard() {
   const location = useLocation();

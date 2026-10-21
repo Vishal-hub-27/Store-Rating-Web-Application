@@ -1,16 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth, homePathFor } from '../context/AuthContext';
-
-// Converted from the <nav> in the old layout.php. Same Bootstrap classes and structure.
 function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const [menuOpen, setMenuOpen] = useState(false); // mobile menu (replaces Bootstrap's JavaScript)
+  const [menuOpen, setMenuOpen] = useState(false); 
   const [searchText, setSearchText] = useState(searchParams.get('search') || '');
-
-  // Keep the search box in sync with the URL (for example after clicking "clear")
   useEffect(() => {
     setSearchText(searchParams.get('search') || '');
   }, [searchParams]);

@@ -5,7 +5,7 @@ import { getErrorMessage } from '../services/api';
 import { validateName, validateEmail, validateAddress, validatePassword } from '../utils/validators';
 import Alert from '../components/Alert';
 
-// Converted from views/users/signup.php. The person chooses Customer (role "user") or Store Owner (role "owner").
+
 function Register() {
   const { user, register } = useAuth();
   const navigate = useNavigate();

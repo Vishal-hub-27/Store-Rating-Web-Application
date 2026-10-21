@@ -1,6 +1,4 @@
-/* Reused from the original Wanderlust style.css.
-   Changes: body flex layout moved to #root (React mounts inside #root),
-   hotel-only styles (.tax-info, .tag-toggle, .show-img, .card-img-overlay, .listing-link) removed. */
+
 #root{
   display:flex;
   flex-direction:column;
@@ -32,7 +30,7 @@ footer{
 .f-info-links a{ text-decoration:none; color:#222222; margin:0 .5rem; }
 .f-info-links a:hover{ text-decoration:underline; }
 
-/* cards (was .listing-card for hotels, now used for stores) */
+
 #filters{ display:flex; flex-wrap:wrap; align-items:center; }
 .listing-card{ border:none !important; margin-bottom:2rem; }
 .card-body{ padding:0 !important; }

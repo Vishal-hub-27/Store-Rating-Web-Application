@@ -1,4 +1,3 @@
-// Same look as the dismissible Bootstrap alerts in the original layout.php
 function Alert({ type = 'danger', message, onClose }) {
   if (!message) return null;
   return (

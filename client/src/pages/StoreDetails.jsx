@@ -8,7 +8,7 @@ import Alert from '../components/Alert';
 
 // Details page of one store. Both roles can open it:
 // - customer: sees details + all ratings, and can add or EDIT their own rating
-// - owner of this store: sees details + all ratings (with emails) and an "Edit store" button, but cannot rate
+
 function StoreDetails() {
   const { id } = useParams();
   const { user } = useAuth();
@@ -57,7 +57,7 @@ function StoreDetails() {
       // The same PUT request creates the first rating and updates later ones
       const wasUpdate = !!store.myRating; // did the user already have a rating before this save?
       await api.put(`/ratings/${id}`, { rating: selected });
-      await loadStore(); // reload so the average and the ratings list are up to date
+      await loadStore(); 
       setSuccess(wasUpdate ? 'Your rating was updated.' : 'Thanks! Your rating was saved.');
     } catch (err) {
       setRatingError(getErrorMessage(err));

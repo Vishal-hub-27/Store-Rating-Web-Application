@@ -1,8 +1,6 @@
 import { Link } from 'react-router-dom';
 import StarRating from './StarRating';
 
-// One store card (the old hotel listing card). The whole card is a link to the store details page.
-// It only DISPLAYS ratings (average + the customer's own); rating itself happens on the details page.
 function StoreCard({ store }) {
   return (
     <div className="col">
@@ -21,7 +19,7 @@ function StoreCard({ store }) {
                 : 'No ratings yet'}
             </p>
 
-            {/* Customers also see their own rating on every card (owners' cards have no myRating, so this is hidden) */}
+        
             {store.myRating !== undefined && (
               <>
                 <p className="rating-label mt-2">Your rating</p>

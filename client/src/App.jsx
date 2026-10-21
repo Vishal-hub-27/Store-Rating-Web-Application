@@ -14,14 +14,12 @@ import EditStore from './pages/EditStore';
 import { Privacy, Terms } from './pages/InfoPages';
 import NotFound from './pages/NotFound';
 
-// "/" sends each visitor to the right place
 function HomeRedirect() {
   const { user, loading } = useAuth();
   if (loading) return <Loader />;
   return <Navigate to={user ? homePathFor(user.role) : '/login'} replace />;
 }
 
-// Same page shell as the old layout.php: navbar, content inside .container, footer
 function App() {
   return (
     <BrowserRouter>
@@ -33,13 +31,13 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
 
-            {/* Customer dashboard */}
+            {/* this is  customer dashboard */}
             <Route path="/stores" element={<ProtectedRoute role="user"><StoreList /></ProtectedRoute>} />
 
-            {/* Details page: any logged-in person (the page itself decides what each role sees) */}
+            
             <Route path="/stores/:id" element={<ProtectedRoute><StoreDetails /></ProtectedRoute>} />
 
-            {/* Owner pages */}
+            {/*this is Owner pages */}
             <Route path="/stores/:id/edit" element={<ProtectedRoute role="owner"><EditStore /></ProtectedRoute>} />
             <Route path="/owner" element={<ProtectedRoute role="owner"><OwnerDashboard /></ProtectedRoute>} />
             <Route path="/owner/stores/new" element={<ProtectedRoute role="owner"><AddStore /></ProtectedRoute>} />

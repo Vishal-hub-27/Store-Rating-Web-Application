@@ -1,4 +1,3 @@
-// Simple Bootstrap spinner shown while data is loading
 function Loader({ text = 'Loading...' }) {
   return (
     <div className="text-center mt-5" role="status">

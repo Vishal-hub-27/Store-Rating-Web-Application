@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 
-// Converted from the <footer> in the old layout.php (the decorative social icons were removed
-// because they did not link anywhere).
+
 function Footer() {
   return (
     <footer>

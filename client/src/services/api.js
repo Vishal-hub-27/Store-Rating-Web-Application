@@ -1,12 +1,6 @@
 import axios from 'axios';
 
-// In development this is http://localhost:5000/api.
-// In production it comes from the VITE_API_URL environment variable (set on Vercel).
-// const api = axios.create({
-//   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
-// });
-// Remove any trailing slash, and add /api if it is missing, so a small mistake in the
-// environment variable cannot break the app.
+
 const rawUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace(/\/+$/, '');
 const api = axios.create({
   baseURL: rawUrl.endsWith('/api') ? rawUrl : `${rawUrl}/api`,

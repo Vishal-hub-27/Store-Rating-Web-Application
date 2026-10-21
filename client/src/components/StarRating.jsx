@@ -2,14 +2,9 @@ import { Fragment } from 'react';
 
 const LABELS = { 1: 'Terrible', 2: 'Not good', 3: 'Average', 4: 'Very good', 5: 'Amazing' };
 
-// Uses the original starability CSS from rating.css.
-// - readOnly: shows stars for a value (like .starability-result in the old reviews list)
-// - otherwise: shows clickable stars (like .starability-slot in the old review form)
-// `name` must be unique per store so the radio groups on one page do not clash.
-// (Fragment, not <span>: the CSS needs each input and its label to be direct siblings.)
 function StarRating({ value = 0, onChange, readOnly = false, name = 'rating' }) {
   if (readOnly) {
-    const rounded = Math.round(value); // stars show whole numbers; the exact number is shown as text
+    const rounded = Math.round(value); 
     return (
       <div
         className="starability-result"

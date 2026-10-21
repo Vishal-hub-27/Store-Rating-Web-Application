@@ -3,15 +3,15 @@ import api from '../services/api';
 
 const AuthContext = createContext(null);
 
-// Where each role should land after logging in
+
 export function homePathFor(role) {
   return role === 'owner' ? '/owner' : '/stores';
 }
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true); // true while we check a saved token
-  const [notice, setNotice] = useState(''); // e.g. "session expired" message for the login page
+  const [loading, setLoading] = useState(true); 
+  const [notice, setNotice] = useState(''); 
 
   // When the page loads, check whether the saved token is still valid
   useEffect(() => {

@@ -5,7 +5,7 @@ import StoreCard from '../components/StoreCard';
 import Loader from '../components/Loader';
 import Alert from '../components/Alert';
 
-// Customer dashboard (converted from views/listings/index.php). Shows all stores as cards; click one to see details and rate it.
+
 function StoreList() {
   const [searchParams] = useSearchParams();
   const search = searchParams.get('search') || ''; // comes from the navbar search box

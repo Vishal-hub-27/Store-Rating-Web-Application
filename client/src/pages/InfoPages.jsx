@@ -1,4 +1,3 @@
-// Converted from views/pages/privacy.php and terms.php
 export function Privacy() {
   return (
     <div className="row mt-4"><div className="col-md-8 offset-md-2">

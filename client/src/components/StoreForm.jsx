@@ -2,10 +2,6 @@ import { useState } from 'react';
 import { getErrorMessage } from '../services/api';
 import { validateStoreName, validateAddress, validateDescription } from '../utils/validators';
 import Alert from './Alert';
-
-// One form used for BOTH "Add new store" and "Edit store".
-// - initialValues: starting text for the fields
-// - onSubmit(values): the page decides what to do (POST or PUT). If it throws, we show the error.
 function StoreForm({ initialValues, submitLabel, onSubmit, onCancel }) {
   const [form, setForm] = useState(initialValues);
   const [fieldErrors, setFieldErrors] = useState({});
