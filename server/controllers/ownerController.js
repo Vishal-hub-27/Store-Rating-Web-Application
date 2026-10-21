@@ -2,9 +2,7 @@ const Store = require('../models/Store');
 const Rating = require('../models/Rating');
 const { getRatingStats } = require('../utils/ratingStats');
 
-// GET /api/owner/dashboard -> ALL stores of the logged-in owner (with their average ratings)
-// We always search by req.user._id (from the token), never by an id sent by the client,
-// so an owner can never see another owner's stores.
+
 async function getDashboard(req, res) {
   try {
     const stores = await Store.find({ ownerId: req.user._id }).sort({ createdAt: -1 });

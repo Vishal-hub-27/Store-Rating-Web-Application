@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-// Replaces the old MySQL `users` table.
+
 // Passwords are hashed with bcryptjs in the controller BEFORE saving.
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true, trim: true },

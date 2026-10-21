@@ -12,12 +12,12 @@ function userResponse(user) {
   return { id: user._id, name: user.name, email: user.email, address: user.address, role: user.role };
 }
 
-// POST /api/auth/register  (public sign up: the person chooses to be a "user" (customer) or an "owner")
+
 async function register(req, res) {
   try {
     const { name, email, address, password, role } = req.body;
 
-    // Collect every validation error so the user can fix them all at once
+    
     const errors = [
       validateName(name),
       validateEmail(email),

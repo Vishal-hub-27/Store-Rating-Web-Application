@@ -4,12 +4,11 @@ const Rating = require('../models/Rating');
 const { getRatingStats } = require('../utils/ratingStats');
 const { validateAddress, validateStoreName, validateStoreDescription } = require('../utils/validators');
 
-// Makes user text safe to use inside a regular expression
+
 function escapeRegex(text) {
   return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-// Adds averageRating, ratingCount and the logged-in user's own rating to each store
 async function addRatingInfo(stores, userId) {
   const storeIds = stores.map((store) => store._id);
   const stats = await getRatingStats(storeIds);
@@ -55,7 +54,7 @@ async function getStores(req, res) {
   }
 }
 
-// GET /api/stores/:id  -> store details + everyone's ratings (the details page)
+
 async function getStoreById(req, res) {
   try {
     if (!mongoose.isValidObjectId(req.params.id)) {
@@ -120,7 +119,7 @@ async function createStore(req, res) {
   }
 }
 
-// PUT /api/stores/:id  (owners only) -> edit the information of MY store
+
 async function updateStore(req, res) {
   try {
     if (!mongoose.isValidObjectId(req.params.id)) {

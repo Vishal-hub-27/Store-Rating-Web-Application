@@ -26,7 +26,7 @@ app.use(
 );
 app.use(express.json());
 
-// Health check (Render uses this to know the server is alive)
+
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
@@ -41,7 +41,7 @@ app.use('/api', (req, res) => {
   res.status(404).json({ message: 'API route not found.' });
 });
 
-// Last-resort error handler (for example a CORS error or invalid JSON body)
+
 app.use((err, req, res, next) => {
   console.error(err.message);
   if (err.message === 'Not allowed by CORS') return res.status(403).json({ message: err.message });

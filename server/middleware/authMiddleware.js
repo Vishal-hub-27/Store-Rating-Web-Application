@@ -21,7 +21,7 @@ async function protect(req, res, next) {
     req.user = user;
     next();
   } catch (error) {
-    // jwt.verify throws when the token is invalid or expired
+    
     return res.status(401).json({ message: 'Session expired. Please log in again.' });
   }
 }

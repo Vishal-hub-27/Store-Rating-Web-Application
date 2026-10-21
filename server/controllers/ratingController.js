@@ -62,7 +62,7 @@ async function saveRating(req, res) {
     });
   } catch (error) {
     if (error.code === 11000) {
-      // Duplicate key: two requests tried to create the first rating at the same moment
+      
       return res.status(409).json({ message: 'You have already rated this store. Please try again.' });
     }
     console.error('Save rating error:', error.message);
