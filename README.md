@@ -185,9 +185,9 @@ Go back to Render -> Environment -> set `CLIENT_URL` to your Vercel URL (no trai
 
 ## Links
 
-- GitHub: _add your repository URL_
-- Frontend (Vercel): _add after deployment_
-- Backend (Render): _add after deployment_
+- GitHub: https://github.com/Vishal-hub-27/Store-Rating-Web-Application_
+- Frontend (Vercel): store-rating-web-application-95jh40pdb-vishal-chougale.vercel.app
+- Backend (Render): https://dashboard.render.com/web/srv-dbc1gb9srm7s739aolfg
 
 ## Security notes
 - Passwords are hashed with bcryptjs and never returned by the API.
