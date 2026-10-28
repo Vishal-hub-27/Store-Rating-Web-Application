@@ -3,9 +3,6 @@
 A full-stack web app where users rate stores from 1 to 5 stars and store owners see who rated their store.
 Built for the **NexaPrime Full Stack Developer Internship Coding Challenge**.
 
-It was converted from my PHP "Wanderlust" hotel-booking project. The design (CSS, navbar, footer, cards, star widget)
-and the simple coding style were kept; hotel listings became stores and hotel reviews became star ratings.
-
 ## Technologies
 
 | Part | Technology |
